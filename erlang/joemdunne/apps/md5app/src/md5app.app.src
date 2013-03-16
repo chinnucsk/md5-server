@@ -1,0 +1,14 @@
+%% -*- erlang -*-
+{application, md5app,
+ [
+  {description, "A Simple TCP Server Example Exercise"},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  riak_core
+                 ]},
+  {mod, { md5app_app, []}},
+  {env, []}
+ ]}.
