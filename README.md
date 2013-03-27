@@ -2,27 +2,35 @@
 
 ## The Task
 
-Write a simple TCP server that listens on some port and calculates the
+Write a simple line-terminated TCP server that listens on some port and calculates the
 MD5 sum of the data received, returning it as a hex-encoded string.
 
 Assuming your server is listening on port 7000, we can test it using
 the netcat command-line utility:
 
 ```bash
-$ echo -n 'Hello, MD5 server!' | nc localhost 7000
-ba6f4fdbbfad6e8613f4f9459db93c7e
+$ echo 'Hello, MD5 server!' | nc localhost 7000
+fb7983521dee01530fbb5b52993bda42
 ```
 
-And we can verify if it is correct by comparing it with a command-line
+Since our TCP server is line-terminated, sending multiple lines will return multiple hashes:
+
+```bash
+$ echo -n -e 'Hello, MD5 server!\nGoodbye, MD5 server!\n' | nc localhost 7000
+fb7983521dee01530fbb5b52993bda42
+639db52c22b6d642ecfd8ff215be8379
+```
+
+We can verify if it is correct by comparing it with a command-line
 md5 utility:
 
 ```bash
-$ SERV_OUT=$(echo -n 'Hello, MD5 server!' | nc localhost 7000)
+$ SERV_OUT=$(echo 'Hello, MD5 server!' | nc localhost 7000)
 $ echo $SERV_OUT
-ba6f4fdbbfad6e8613f4f9459db93c7e
-$ CLI_OUT=$(echo -n 'Hello, MD5 server!' | md5)
+fb7983521dee01530fbb5b52993bda42
+$ CLI_OUT=$(echo 'Hello, MD5 server!' | md5)
 $ echo $CLI_OUT
-ba6f4fdbbfad6e8613f4f9459db93c7e
+fb7983521dee01530fbb5b52993bda42
 $ [ $SERV_OUT = $CLI_OUT ] && echo "Great, our MD5 server seems to be working"
 Great, our MD5 server seems to be working
 ```
